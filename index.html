@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src = "index.js" defer></script>
+    <link rel="stylesheet" href= "style.css">
+</head>
+<body>
+  <div id ="temp" >
+    <p id = "tempDisplay"></p>
+    <button id = "celFar" value = "f" onclick ='celFar()' ></button>
+   </div>
+    <div id = "content">
+      <div id = "generalWeather">
+          <div id= "timeDate">
+            <div id = "time"> </div>
+            <div id = "date"></div>
+          </div>
+      </div>
+      <div id = "specificWeather">
+
+      </div>
+      <div id = "weekWeather">
+        <div id = "location">
+          <div id = "currentCity"></div>
+          <form id = "chooseLocation" onsubmit="return false">
+            <input type = "text" id = "city"placeholder="Where are you?" value = "">
+            <button  id = "submit" onclick='getWeather()' ><img src = "images/search.png" id = "search"></button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- <div id = "weather">Hello</div> -->
+  <!--   <form onsubmit= "getWeather()">
+        <input id = "city" type= "text">
+        <input type = "submit">
+    </form>
+   -->
+    
+</body>
+</html>
