@@ -34,34 +34,42 @@ const key = "8eb83a7bd958087710c1f10c6d397b4a";
       let temp = response.main.temp;
       console.log(temp);
       //convert temperature to farinheight if its the value of the button
-      let choice = document.querySelector('#celFar')
-      console.log(choice);
-      if(choice.value == "f") {
-        temp = Math.round(1.8 * (temp-273) + 32);
-        console.log(temp);
-        //Show them to click to diplay the other
-        choice.innerHTML = "Display Celsius"
-      } else {
-        temp = Math.round(temp-273.5);
-        //Show them to click to diplay the other
-        choice.innerHTML = "Display Fahrenheit"
-      }
+     temp = tempConvert(temp);
       //push temperature
       weatherDisplay.innerHTML = `<p> ${temp}°</p>`
       //push city data to display
       document.querySelector('#currentCity').innerHTML = city;
+      //load 7 day weather 
+      getForecast(response.coord.lat,response.coord.lon);
 
 
   })
 
 };
 getWeather();
+const tempConvert = (temp) => {
+   //convert temperature to farinheight if its the value of the button
+   let choice = document.querySelector('#celFar')
 
+   if(choice.value == "f") {
+     temp = Math.round(1.8 * (temp-273) + 32);
+     //Show them to click to diplay the other
+     choice.innerHTML = "Display Celsius"
+     //return temp
+     return temp
+   } else {
+     temp = Math.round(temp-273.5);
+     //Show them to click to diplay the other
+     choice.innerHTML = "Display Fahrenheit"
+     //return temp
+     return temp
+   }
+};
 function getTemp (){
 
 }
-function getDate (){
-  //days of week
+const getDays = (dayIndex) => {
+     //days of week
   const days = [
     'Sunday',
     'Monday',
@@ -71,6 +79,12 @@ function getDate (){
     'Friday',
     'Saturday'
   ]
+  //get that place on the index
+  let dayWeek = days[dayIndex];
+  return dayWeek
+};
+function getDate (){
+  
   //Months
   const months = [
     'January',
@@ -86,11 +100,11 @@ function getDate (){
     'November',
     'December'
   ]
-  let date = new Date();
+  const date = new Date();
   //get day of week as number 
-  let dayIndex = date.getDay();
+  const dayIndex = date.getDay();
   //get that place on the index
-  let dayWeek = days[dayIndex];
+  let dayWeek = getDays(dayIndex);
   //get the month as a number
   monthIndex = date.getMonth();
   //get that spot on the index
@@ -154,5 +168,71 @@ function celFar() {
   getWeather();
 };
 
+/* /* function dailyWeather () {
+  //get date
+  const date = new Date();
+  //get day
+  //create day dives
+  //
 
+}
+ */
+
+
+ const getForecast = async(lat,lon) => {
+  const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${key}`;
+ try { 
+   let res = await fetch(url);
+   let data = await res.json();
+   //get array of daily temps
+   let daily = data.daily
+   console.log(daily);
+   
+   //get day divs where the data will be appended
+   const display = document.querySelectorAll('#day')
+   //loop through array of daily data, we only want 7 days, so minus 2
+   for(let i=0;i<daily.length-1;i++) {
+   
+   //Loop through day divs append the new p element to the day div
+        for(let j=0;i<display.length;j++){
+           //create new p elements, max and min, and add the temp to the p elements inner text
+    let pMax = document.createElement('p');
+    let pMin = document.createElement('p');
+    //get the max and min temps that we will add to the p element, and convert from kelvin
+    let max = tempConvert(daily[i].temp.max)
+    let min = tempConvert(daily[i].temp.min)
+    pMax.innerText=`High: ${max}`
+    pMin.innerText=`Min: ${min}`
+          //reset display
+          display[j].innerText="";
+          //reset images on first iteration
+          if(i==0){
+            let images = document.querySelectorAll('#weatherIcons');
+            Array.from(images).forEach((image)=> {
+                image.parentNode.removeChild(image);
+            })
+          };
+          //get the weather icon code depending on the day
+          let iconCode = daily[i].weather[0].icon;
+          //create img element
+          let img = document.createElement('img');
+          img.id = "weatherIcons";
+          //add src
+          img.src=`http://openweathermap.org/img/wn/${iconCode}@2x.png`
+          //append new children
+          display[j].appendChild(pMax);
+          display[j].appendChild(pMin);
+          //append o,age
+          display[j].appendChild(img);
+          
+         i++
+          
+        }
+   }
+  } catch(err) {
+    console.log(err);
+  }
+
+  
+ }; 
 

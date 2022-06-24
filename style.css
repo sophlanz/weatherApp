@@ -75,6 +75,7 @@ img.background {
     grid-column:1/4;
     grid-row:3/4;
     background: rgba(0, 0, 0, 0.3);
+  
 }
 #weekWeather {
     grid-column:3/4;
@@ -145,4 +146,21 @@ input[type = "text"] {
 #search {
     height:10px;
     width:10px;
+}
+#daily {
+    display:flex;
+    width:100vw;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
+}
+#day {
+    display:flex;
+    height:200px;
+    width:150px;
+    background-color:blue;
+}
+#weatherIcons {
+    height:50px;
+    width:50px;
 }
