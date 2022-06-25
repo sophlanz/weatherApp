@@ -40,6 +40,7 @@ body {
     background-repeat:no-repeat;
     background-position-x: 50%;
     font-family: 'Playfair Display', serif;
+    overflow:hidden;
 }
 ol, ul {
 	list-style: none;
@@ -109,15 +110,17 @@ img.background {
     align-items:center;
 }
 #celFar {
-    width:150px;
+    width:170px;
     height:30px;
     line-height: 50%;
     background: rgba(255, 255, 255, 0.3);
     border-radius: 1rem;
     margin-top:10px;
+    font-size:.8rem;
+    letter-spacing: 2px;
 }
 #tempDisplay {
-    font-size:5rem;
+    font-size:6rem;
     color:rgb(59, 58, 58);
 }
 #chooseLocation {
@@ -156,11 +159,91 @@ input[type = "text"] {
 }
 #day {
     display:flex;
-    height:200px;
+    flex-direction:column;
+    height:180px;
     width:150px;
-    background-color:blue;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius:1rem;
+    justify-content:center;
+    align-items:center;
+    
+    
+}
+p#pMax{
+font-size:2.7rem;
+margin-bottom:5px;
+font-weight:400;
+}
+p#pMin {
+font-size:1.7rem;
+float:left;
+}
+p#dayWeek{
+font-size:1.3rem;
+margin-top:10px;
+margin-bottom:10px;
+
 }
 #weatherIcons {
-    height:50px;
-    width:50px;
+    height:75px;
+    width:75px;
+}
+
+#hourlyWeather {
+    height:180px;
+    width:130px;
+    background:rgba(255, 255, 255, 0.3);
+    border-radius:1rem;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+   
+}
+#tab1,#tab2,#tab3 {
+    display:flex;
+    gap:20px;
+    justify-content:center;
+}
+#hourlyIcons {
+    height:75px;
+    width:75px;
+}
+#hourlyTemps {
+    font-size:2.7rem;
+    font-weight:400;
+}
+#hourlyTime {
+    font-size:1.5rem;
+}
+#menu {
+    display:flex;
+    gap:10px;
+    margin-left:50px;
+    align-items:center;
+    margin-bottom:10px;
+}
+#firstTab,#secondTab,#thirdTab {
+  border-radius: 50%;
+  height:20px;
+  width:20px;
+  background-color:rgba(0, 0, 0, 0.3);
+}
+#dailyButton {
+height:30px;
+width:80px;
+background-color:rgb(0 0 0 / 0%);
+color:rgb(40 39 39);
+border-radius:.5rem;
+font-size:1rem;
+letter-spacing:2px;
+}
+#hourlyButton {
+    height:30px;
+    width:80px;
+    background-color:rgb(0 0 0 / 0%);
+    color:rgb(40 39 39);
+    border-radius:.5rem;
+    font-size:1rem;
+    letter-spacing:2px;
 }

@@ -1,37 +1,33 @@
 
 
 const apiURL = "http://api.openweathermap.org/data/2.5/weather?q=";
-const key = "8eb83a7bd958087710c1f10c6d397b4a";
+const key = "15a5fdc9a1bdf90072235f63856b6d1d";
+
 
 /* window.onbeforeunload = function (e) {
     console.log(e);
     return true;
 } */
- function getWeather() {
+
+  async function getWeather() {
    //where temperature will be sent
   const weatherDisplay = document.querySelector("#tempDisplay");
-  let city = " ";
-  //button to push farenheight and celcius data
-
+  //hide button for hourly display
+  document.getElementById('hourlyButtons').style.display="none";
+let city = " ";
 //get city, if no city set to Barcelona
     if (document.querySelector('#city').value == ""){
         city = "Barcelona"
     } else {
        city = document.querySelector('#city').value.trim();
     }
-    console.log(city);
-    const arr = [apiURL];
-    arr.push(city,"&APPID=",key );
-    const weatherUrl=arr.join('');
-//get data
-  fetch(weatherUrl, {mode:"cors"})
-  .then(function(response) {
-    return response.json() ;
-  })
-  .then(function(response){
-      console.log(response);
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}`
+    //get data
+     let response =  await fetch(weatherUrl);
+     let data = await response.json();
+     console.log(data);
       //get temp from response
-      let temp = response.main.temp;
+      let temp = data.main.temp;
       console.log(temp);
       //convert temperature to farinheight if its the value of the button
      temp = tempConvert(temp);
@@ -40,13 +36,14 @@ const key = "8eb83a7bd958087710c1f10c6d397b4a";
       //push city data to display
       document.querySelector('#currentCity').innerHTML = city;
       //load 7 day weather 
-      getForecast(response.coord.lat,response.coord.lon);
+      getForecast(data.coord.lat,data.coord.lon);
 
 
-  })
+  };
 
-};
+
 getWeather();
+//convert temp between cel and far 
 const tempConvert = (temp) => {
    //convert temperature to farinheight if its the value of the button
    let choice = document.querySelector('#celFar')
@@ -65,9 +62,7 @@ const tempConvert = (temp) => {
      return temp
    }
 };
-function getTemp (){
-
-}
+//get days of the week
 const getDays = (dayIndex) => {
      //days of week
   const days = [
@@ -83,6 +78,7 @@ const getDays = (dayIndex) => {
   let dayWeek = days[dayIndex];
   return dayWeek
 };
+//get date for main date and time display
 function getDate (){
   
   //Months
@@ -118,6 +114,7 @@ function getDate (){
   dateText.innerHTML = `${dayWeek}, ${month} ${day}, ${year}`
 }
 getDate();
+//get time for main date and time display
 function getTime () {
   let time = new Date();
   //get hour
@@ -150,6 +147,7 @@ const timeText = document.querySelector('#time');
 timeText.innerHTML = `${hour}:${minutes} ${timeOfDay}`;  
   }
 getTime();
+//keep refreshing the time every 1000 miliseconds
 setInterval(getTime,1000);
 //keep track of celcius vs farenheight choice
 function celFar() {
@@ -167,20 +165,15 @@ function celFar() {
   }
   getWeather();
 };
-
-/* /* function dailyWeather () {
-  //get date
-  const date = new Date();
-  //get day
-  //create day dives
-  //
-
-}
- */
-
-
+//get weather for 7day forecast
  const getForecast = async(lat,lon) => {
   const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${key}`;
+  //hide button for hourly display
+  document.getElementById('hourlyButtons').style.display="none";
+  //change style of hourly button 
+  document.getElementById('hourlyButton').style.backgroundColor= "";
+  //change style of daily button
+  document.getElementById('dailyButton').style.backgroundColor= "rgba(255, 255, 255, 0.3)";
  try { 
    let res = await fetch(url);
    let data = await res.json();
@@ -197,12 +190,30 @@ function celFar() {
         for(let j=0;i<display.length;j++){
            //create new p elements, max and min, and add the temp to the p elements inner text
     let pMax = document.createElement('p');
+    pMax.id= "pMax";
     let pMin = document.createElement('p');
+    pMin.id= "pMin";
     //get the max and min temps that we will add to the p element, and convert from kelvin
     let max = tempConvert(daily[i].temp.max)
     let min = tempConvert(daily[i].temp.min)
-    pMax.innerText=`High: ${max}`
-    pMin.innerText=`Min: ${min}`
+    if(document.getElementById('celFar').value== "f"){
+      pMax.innerText = `${max} °F `
+      pMin.innerText = `${min} °F `
+    } else {
+      pMax.innerText = `${max} °C `
+      pMin.innerText = `${min} °C `
+    }
+    //get the timestamp provided by the api
+    let timeStamp = daily[i].dt;
+    //create a new date object using timestap
+    let date = new Date(timeStamp*1000);
+    //get day as a number and pass it through getDays function
+    let day = getDays(date.getDay())
+    //create p element to append day of week
+    let dayWeek = document.createElement('p');
+    dayWeek.id = "dayWeek";
+    //add the day to the inner text
+    dayWeek.innerText = day
           //reset display
           display[j].innerText="";
           //reset images on first iteration
@@ -219,20 +230,212 @@ function celFar() {
           img.id = "weatherIcons";
           //add src
           img.src=`http://openweathermap.org/img/wn/${iconCode}@2x.png`
-          //append new children
+          //append dayWeek
+          display[j].appendChild(dayWeek);
+          //append max and min children
           display[j].appendChild(pMax);
           display[j].appendChild(pMin);
-          //append o,age
+          //append image
           display[j].appendChild(img);
-          
          i++
-          
         }
    }
   } catch(err) {
     console.log(err);
   }
-
-  
  }; 
+//get hourly forecase 
+async function hourlyForecast () {
+  //show buttons for hourly display
+  document.getElementById('hourlyButtons').style.display="";
+  let city = " "
+  //get current city 
+  if (document.querySelector('#city').value == ""){
+     city = "Barcelona"
+} else {
+   city = document.querySelector('#city').value.trim();
+}
+//make api call to get lat and lon
+const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}`
+const response = await fetch(weatherUrl)
+const data = await response.json();
+//get lat long to make new api request for hourly data. 
+const lat = data.coord.lat;
+const lon = data.coord.lon;
 
+  //make api call to get hourly data
+  let urlHourly = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=daily,minutely&appid=${key}`
+  const res = await fetch(urlHourly);
+  const dataHourly = await res.json();
+  const hourly = [...dataHourly.hourly]
+  //splie out the hours past 24 hours
+  hourly.splice(24);
+  console.log(hourly);
+  //put the 12 clock hours to this array
+  const hours = [ ]
+  const timesOfDay = [ ];
+  const iconCodes = [ ]
+  //turn on display of the 24 divs
+  //change the timestamp to reflect hours
+  hourly.forEach((hour)=> {
+    //get the icon then push to array
+    let iconCode = hour.weather[0].icon;
+     iconCodes.push(iconCode);
+     hour = new Date(hour.dt*1000).getHours()
+    //convert to 12-hour clock and add am/pm
+    if (hour < 12) {
+      timeOfDay = "AM";
+      hour = hour%12;
+      if(hour==0) {
+        hour = 12;
+      }
+    } else {
+     timeOfDay= "PM";
+     hour = hour%12; 
+     if(hour==0) {
+       hour = 12;
+     }
+    };
+    //push hour to hours array
+    hours.push(hour);
+    //push times of day
+    timesOfDay.push(timeOfDay);
+  
+  }) 
+  //for loop to create divs, then add the hour and time of day. 
+  console.log(hours);
+  console.log(timesOfDay);
+  //hide weekly display
+  document.getElementById('daily').style.display = "none";
+  //show hourly display
+  document.getElementById('hourly').style.display = "";
+  //clear divs from the previous time
+  let oldDivs = document.querySelectorAll("#hourlyWeather");
+  oldDivs = [...oldDivs];
+  if(oldDivs){
+    oldDivs.forEach((div)=> {
+      div.parentNode.removeChild(div);
+    })
+  }
+  //get tabs
+  const tab1 = document.getElementById('tab1');
+  const tab2 = document.getElementById('tab2');
+  const tab3 = document.getElementById('tab3');
+  
+  for(let i=0; i<hours.length;i++){
+
+    let div = document.createElement('div');
+    div.id = "hourlyWeather";
+    //add hour and time of day to div
+    let time = document.createElement('p');
+    time.innerText = `${hours[i]} ${timesOfDay[i]}`;
+    time.id="hourlyTime";
+    //append time to new div
+    div.appendChild(time);
+    //add temp from hourly array
+    let temp = hourly[i].temp
+    temp = tempConvert(temp);
+    //create p element for temp
+    let tempDisplay = document.createElement('p');
+    tempDisplay.id="hourlyTemps";
+    //inner text far vs cel
+    if(document.getElementById('celFar').value== "f"){
+      tempDisplay.innerText = `${temp} °F `
+    } else {
+      tempDisplay.innerText = `${temp} °C`
+    }
+    //append temp to div
+    div.appendChild(tempDisplay);
+    //append icons to div
+     //create img element
+     let img = document.createElement('img');
+     img.id = "hourlyIcons";
+     //get icon code from array
+     let iconCode = iconCodes[i];
+     //add src
+     img.src=`http://openweathermap.org/img/wn/${iconCode}@2x.png`;
+     div.appendChild(img);
+    if(i<8){
+      //append previously created div to tab
+        tab1.appendChild(div);
+    }
+    //if i<16 add to tab 2
+    else if (i<16){
+       //append previously created div to tab
+       tab2.appendChild(div);
+     }
+     //else add to tab 3
+    else  {
+        //append previously created div to tab
+        tab3.appendChild(div);
+    }
+
+    ;
+  }
+  //hide tab2 and tab3
+  document.getElementById('tab2').style.display = "none";
+  document.getElementById('tab3').style.display = "none";
+  //show the first tab
+  document.getElementById('tab1').style.display = ""
+  //Change style of first tab button 
+  document.getElementById('firstTab').style.backgroundColor="rgba(255, 255, 255, 0.3)";
+  //change style of hourly button 
+  document.getElementById('hourlyButton').style.backgroundColor= "rgba(255, 255, 255, 0.3)";
+   //change font-coor 
+ document.getElementById('hourlyButton').style.color= "rgb(59, 58, 58);";
+ document.getElementById('dailyButton').style.color= "";
+  //change style of daily button
+  document.getElementById('dailyButton').style.backgroundColor= "";
+  
+ 
+};
+
+function dailyForecast () {
+  document.getElementById('hourly').style.display="none";
+  document.getElementById('daily').style.display=""
+    //hide button for hourly display
+    document.getElementById('hourlyButtons').style.display="none";
+ //change style of hourly button 
+ document.getElementById('hourlyButton').style.backgroundColor= "";
+ //change style of daily button
+ document.getElementById('dailyButton').style.backgroundColor= "rgba(255, 255, 255, 0.3)";
+ //change font-coor 
+ document.getElementById('dailyButton').style.color= "rgb(59, 58, 58);";
+ document.getElementById('hourlyButton').style.color= "";
+};
+//hourly tabs
+function openTab(value) {
+  if(value == "tab1") {
+    //hide other tabs
+    document.getElementById('tab2').style.display = "none";
+    document.getElementById('tab3').style.display = "none";
+    //show selected tap
+    document.getElementById('tab1').style.display = "";
+    //change style of button 
+    document.getElementById('firstTab').style.backgroundColor="rgba(255, 255, 255, 0.3)";
+    document.getElementById('secondTab').style.backgroundColor="";
+    document.getElementById('thirdTab').style.backgroundColor="";
+  } else if (value == "tab2") {
+    //hide other tabs
+    document.getElementById('tab1').style.display = "none";
+    document.getElementById('tab3').style.display = "none";
+    //show selected tab
+    document.getElementById('tab2').style.display = "";
+    //change style of button 
+    document.getElementById('secondTab').style.backgroundColor="rgba(255, 255, 255, 0.3)";
+    document.getElementById('firstTab').style.backgroundColor="";
+    document.getElementById('thirdTab').style.backgroundColor="";
+
+  } else {
+    //hide other tabs
+    document.getElementById('tab1').style.display = "none";
+    document.getElementById('tab2').style.display = "none";
+     //show selected tab
+     document.getElementById('tab3').style.display = "";
+     //change style of button 
+    document.getElementById('thirdTab').style.backgroundColor="rgba(255, 255, 255, 0.3)";
+    document.getElementById('firstTab').style.backgroundColor="";
+    document.getElementById('secondTab').style.backgroundColor="";
+
+  }
+}

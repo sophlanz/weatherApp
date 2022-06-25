@@ -21,6 +21,16 @@
           </div>
       </div>
       <div id = "specificWeather">
+        <div id = "menu">
+          <button id ="dailyButton" onclick = 'dailyForecast () '>Daily</button>
+          <button id ="hourlyButton" onclick = 'hourlyForecast()'>Hourly</button>
+          <div id = "hourlyButtons">
+            <button id="firstTab" onclick = 'openTab("tab1")'></button>
+            <button id="secondTab" onclick = 'openTab("tab2")'></button>
+            <button id="thirdTab" onclick = 'openTab("tab3")'></button>
+          </div>
+        </div>
+       
           <div id = "dailyHourly">
             <div id = "daily">
                 <div id = "day"></div>
@@ -32,13 +42,12 @@
                 <div id = "day"></div>
             </div>
             <div id = "hourly">
-                <div id = "hour"></div>
-                <div id = "hour"></div>
-                <div id = "hour"></div>
-                <div id = "hour"></div>
-                <div id = "hour"></div>
-                <div id = "hour"></div>
-                <div id = "hour"></div>
+             
+              <div id = "tabs">
+                <div id = "tab1"></div>
+                <div id = "tab2"></div>
+                <div id = "tab3"></div>
+              </div>
           </div>
       </div>
     </div>
