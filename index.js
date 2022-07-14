@@ -106,7 +106,8 @@ function getDate (){
   //get that spot on the index
   let month = months[monthIndex];
   //day
-  let day = date.getDay();
+  let day = date.getDate();
+  
   //year
   let year = date.getFullYear();
   //send data to html
