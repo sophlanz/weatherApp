@@ -1,21 +1,12 @@
-
-
 const apiURL = "http://api.openweathermap.org/data/2.5/weather?q=";
 const key = "15a5fdc9a1bdf90072235f63856b6d1d";
-
-
-/* window.onbeforeunload = function (e) {
-    console.log(e);
-    return true;
-} */
-
-  async function getWeather() {
-   //where temperature will be sent
-  const weatherDisplay = document.querySelector("#tempDisplay");
-  //hide button for hourly display
-  document.getElementById('hourlyButtons').style.display="none";
-let city = " ";
-//get city, if no city set to Barcelona
+async function getWeather() {
+    //where temperature will be sent
+    const weatherDisplay = document.querySelector("#tempDisplay");
+    //hide button for hourly display
+    document.getElementById('hourlyButtons').style.display="none";
+    let city = " ";
+    //get city, if no city set to Barcelona
     if (document.querySelector('#city').value == ""){
         city = "Barcelona"
     } else {
@@ -25,10 +16,8 @@ let city = " ";
     //get data
      let response =  await fetch(weatherUrl);
      let data = await response.json();
-     console.log(data);
       //get temp from response
       let temp = data.main.temp;
-      console.log(temp);
       //convert temperature to farinheight if its the value of the button
      temp = tempConvert(temp);
       //push temperature
@@ -37,17 +26,12 @@ let city = " ";
       document.querySelector('#currentCity').innerHTML = city;
       //load 7 day weather 
       getForecast(data.coord.lat,data.coord.lon);
-
-
   };
-
-
 getWeather();
 //convert temp between cel and far 
 const tempConvert = (temp) => {
    //convert temperature to farinheight if its the value of the button
    let choice = document.querySelector('#celFar')
-
    if(choice.value == "f") {
      temp = Math.round(1.8 * (temp-273) + 32);
      //Show them to click to diplay the other
@@ -80,7 +64,6 @@ const getDays = (dayIndex) => {
 };
 //get date for main date and time display
 function getDate (){
-  
   //Months
   const months = [
     'January',
@@ -100,24 +83,23 @@ function getDate (){
   //get day of week as number 
   const dayIndex = date.getDay();
   //get that place on the index
-  let dayWeek = getDays(dayIndex);
+  const dayWeek = getDays(dayIndex);
   //get the month as a number
-  monthIndex = date.getMonth();
+  const monthIndex = date.getMonth();
   //get that spot on the index
-  let month = months[monthIndex];
+  const month = months[monthIndex];
   //day
-  let day = date.getDate();
-  
+  const day = date.getDate();
   //year
-  let year = date.getFullYear();
+  const year = date.getFullYear();
   //send data to html
   const dateText = document.querySelector("#date");
   dateText.innerHTML = `${dayWeek}, ${month} ${day}, ${year}`
-}
+};
 getDate();
 //get time for main date and time display
 function getTime () {
-  let time = new Date();
+  const time = new Date();
   //get hour
   let hour = time.getHours();
   //get minutes
@@ -146,7 +128,7 @@ function getTime () {
 //send data to div
 const timeText = document.querySelector('#time');
 timeText.innerHTML = `${hour}:${minutes} ${timeOfDay}`;  
-  }
+  };
 getTime();
 //keep refreshing the time every 1000 miliseconds
 setInterval(getTime,1000);
@@ -176,27 +158,24 @@ function celFar() {
   //change style of daily button
   document.getElementById('dailyButton').style.backgroundColor= "rgba(255, 255, 255, 0.3)";
  try { 
-   let res = await fetch(url);
-   let data = await res.json();
+   const res = await fetch(url);
+   const data = await res.json();
    //get array of daily temps
-   let daily = data.daily
-   console.log(daily);
-   
+   const daily = data.daily
    //get day divs where the data will be appended
    const display = document.querySelectorAll('#day')
    //loop through array of daily data, we only want 7 days, so minus 2
    for(let i=0;i<daily.length-1;i++) {
-   
    //Loop through day divs append the new p element to the day div
-        for(let j=0;i<display.length;j++){
-           //create new p elements, max and min, and add the temp to the p elements inner text
-    let pMax = document.createElement('p');
+    for(let j=0;i<display.length;j++){
+    //create new p elements, max and min, and add the temp to the p elements inner text
+    const pMax = document.createElement('p');
     pMax.id= "pMax";
-    let pMin = document.createElement('p');
+    const pMin = document.createElement('p');
     pMin.id= "pMin";
     //get the max and min temps that we will add to the p element, and convert from kelvin
-    let max = tempConvert(daily[i].temp.max)
-    let min = tempConvert(daily[i].temp.min)
+    const max = tempConvert(daily[i].temp.max)
+    const min = tempConvert(daily[i].temp.min)
     if(document.getElementById('celFar').value== "f"){
       pMax.innerText = `${max} °F `
       pMin.innerText = `${min} °F `
@@ -205,13 +184,13 @@ function celFar() {
       pMin.innerText = `${min} °C `
     }
     //get the timestamp provided by the api
-    let timeStamp = daily[i].dt;
+    const timeStamp = daily[i].dt;
     //create a new date object using timestap
-    let date = new Date(timeStamp*1000);
+    const date = new Date(timeStamp*1000);
     //get day as a number and pass it through getDays function
-    let day = getDays(date.getDay())
+    const day = getDays(date.getDay())
     //create p element to append day of week
-    let dayWeek = document.createElement('p');
+    const dayWeek = document.createElement('p');
     dayWeek.id = "dayWeek";
     //add the day to the inner text
     dayWeek.innerText = day
@@ -219,15 +198,15 @@ function celFar() {
           display[j].innerText="";
           //reset images on first iteration
           if(i==0){
-            let images = document.querySelectorAll('#weatherIcons');
+            const images = document.querySelectorAll('#weatherIcons');
             Array.from(images).forEach((image)=> {
                 image.parentNode.removeChild(image);
             })
           };
           //get the weather icon code depending on the day
-          let iconCode = daily[i].weather[0].icon;
+          const iconCode = daily[i].weather[0].icon;
           //create img element
-          let img = document.createElement('img');
+          const img = document.createElement('img');
           img.id = "weatherIcons";
           //add src
           img.src=`http://openweathermap.org/img/wn/${iconCode}@2x.png`
@@ -256,22 +235,20 @@ async function hourlyForecast () {
 } else {
    city = document.querySelector('#city').value.trim();
 }
-//make api call to get lat and lon
-const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}`
-const response = await fetch(weatherUrl)
-const data = await response.json();
-//get lat long to make new api request for hourly data. 
-const lat = data.coord.lat;
-const lon = data.coord.lon;
-
+  //make api call to get lat and lon
+  const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}`
+  const response = await fetch(weatherUrl)
+  const data = await response.json();
+  //get lat long to make new api request for hourly data. 
+  const lat = data.coord.lat;
+  const lon = data.coord.lon;
   //make api call to get hourly data
-  let urlHourly = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=daily,minutely&appid=${key}`
+  const urlHourly = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=daily,minutely&appid=${key}`
   const res = await fetch(urlHourly);
   const dataHourly = await res.json();
   const hourly = [...dataHourly.hourly]
   //splie out the hours past 24 hours
   hourly.splice(24);
-  console.log(hourly);
   //put the 12 clock hours to this array
   const hours = [ ]
   const timesOfDay = [ ];
@@ -279,17 +256,17 @@ const lon = data.coord.lon;
   //turn on display of the 24 divs
   //change the timestamp to reflect hours
   hourly.forEach((hour)=> {
-    //get the icon then push to array
-    let iconCode = hour.weather[0].icon;
-     iconCodes.push(iconCode);
-     hour = new Date(hour.dt*1000).getHours()
-    //convert to 12-hour clock and add am/pm
-    if (hour < 12) {
-      timeOfDay = "AM";
-      hour = hour%12;
-      if(hour==0) {
-        hour = 12;
-      }
+  //get the icon then push to array
+  let iconCode = hour.weather[0].icon;
+  iconCodes.push(iconCode);
+  hour = new Date(hour.dt*1000).getHours()
+  //convert to 12-hour clock and add am/pm
+  if (hour < 12) {
+    timeOfDay = "AM";
+    hour = hour%12;
+    if(hour==0) {
+      hour = 12;
+    }
     } else {
      timeOfDay= "PM";
      hour = hour%12; 
@@ -301,11 +278,7 @@ const lon = data.coord.lon;
     hours.push(hour);
     //push times of day
     timesOfDay.push(timeOfDay);
-  
-  }) 
-  //for loop to create divs, then add the hour and time of day. 
-  console.log(hours);
-  console.log(timesOfDay);
+  }); 
   //hide weekly display
   document.getElementById('daily').style.display = "none";
   //show hourly display
@@ -317,14 +290,12 @@ const lon = data.coord.lon;
     oldDivs.forEach((div)=> {
       div.parentNode.removeChild(div);
     })
-  }
+  };
   //get tabs
   const tab1 = document.getElementById('tab1');
   const tab2 = document.getElementById('tab2');
   const tab3 = document.getElementById('tab3');
-  
   for(let i=0; i<hours.length;i++){
-
     let div = document.createElement('div');
     div.id = "hourlyWeather";
     //add hour and time of day to div
@@ -358,21 +329,19 @@ const lon = data.coord.lon;
      div.appendChild(img);
     if(i<8){
       //append previously created div to tab
-        tab1.appendChild(div);
+      tab1.appendChild(div);
     }
     //if i<16 add to tab 2
     else if (i<16){
-       //append previously created div to tab
-       tab2.appendChild(div);
+      //append previously created div to tab
+      tab2.appendChild(div);
      }
      //else add to tab 3
     else  {
-        //append previously created div to tab
-        tab3.appendChild(div);
+      //append previously created div to tab
+      tab3.appendChild(div);
     }
-
-    ;
-  }
+  };
   //hide tab2 and tab3
   document.getElementById('tab2').style.display = "none";
   document.getElementById('tab3').style.display = "none";
@@ -387,15 +356,13 @@ const lon = data.coord.lon;
  document.getElementById('dailyButton').style.color= "";
   //change style of daily button
   document.getElementById('dailyButton').style.backgroundColor= "";
-  
- 
 };
 
 function dailyForecast () {
   document.getElementById('hourly').style.display="none";
   document.getElementById('daily').style.display=""
-    //hide button for hourly display
-    document.getElementById('hourlyButtons').style.display="none";
+  //hide button for hourly display
+  document.getElementById('hourlyButtons').style.display="none";
  //change style of hourly button 
  document.getElementById('hourlyButton').style.backgroundColor= "";
  //change style of daily button
@@ -439,4 +406,4 @@ function openTab(value) {
     document.getElementById('secondTab').style.backgroundColor="";
 
   }
-}
+};
