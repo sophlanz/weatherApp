@@ -237,7 +237,7 @@ margin-bottom:10px;
     font-size:1rem;
     letter-spacing:2px;
 }
-/*Responsive Design*/
+/*Responsive Design 1000-600*/
 @media only screen and (max-width: 1000px) {
     /*add additional rows*/
     #content {
@@ -319,6 +319,49 @@ margin-bottom:10px;
         width:40px;
         margin-left:25px;
     }
+    /*Responsive Design 600-1000*/
+    @media only screen and (max-width: 600px){
+        /*change content to only 1 column*/
+        #content {
+            grid-template-columns: 1fr;
+        }
+        /*make divs bigger that display weather*/
+        #specificWeather {
+            height:400px;
+        }
+        #day {
+            min-height: 300px;
+        }
+        #hourlyWeather {
+            min-width: 200px;
+            min-height: 220px;
+        }
+        /*increase font size;*/
+        #celFar {
+            font-size:1.4rem;
+        }
+        #weekWeather {
+            grid-row:1/2;
+            grid-column:1/2;
+            
+        }
+        #generalWeather {
+            grid-row:1/2;
+            grid-column:1/2;
+        }
+        #time {
+            font-size:2.2rem;
+            margin-top:120px;
+        }
+        #date {
+            font-size:1.8rem;
+        }
+        #tempDisplay{
+            font-size:10rem;
+        }
+
+}   
+
 
 
   }
