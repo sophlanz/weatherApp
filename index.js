@@ -1,6 +1,6 @@
 const apiURL = "http://api.openweathermap.org/data/2.5/weather?q=";
 
-const key = config.SECRET_API_KEY;
+/* const key = config.SECRET_API_KEY; */
 async function getWeather() {
     //where temperature will be sent
     const weatherDisplay = document.querySelector("#tempDisplay");
@@ -13,7 +13,7 @@ async function getWeather() {
     } else {
        city = document.querySelector('#city').value.trim();
     }
-    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}`
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${SECRET_API_KEY}`
     //get data
      let response =  await fetch(weatherUrl);
      let data = await response.json();
