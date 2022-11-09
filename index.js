@@ -1,4 +1,5 @@
 const apiURL = "http://api.openweathermap.org/data/2.5/weather?q=";
+
 const key = config.SECRET_API_KEY;
 async function getWeather() {
     //where temperature will be sent
