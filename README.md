@@ -1,6 +1,6 @@
 # weatherApp
 
-## Live Demo:https://sophlanz.github.io/weatherApp/
+## Live Demo:https://weather-app-sophlanz.netlify.app/
 
 ## Description 
 A weather app that fetches data from the OpenWeatherApi to display the weather of the chosen city. 
@@ -9,7 +9,7 @@ A weather app that fetches data from the OpenWeatherApi to display the weather o
 - HTML
 - CSS
 - OpenWeatherApi
-
+- Netlify
 ## Features
 - Fetch 7-day and hourly forecasts from the API, based on city. 
 - C°/F° conversion.
