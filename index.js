@@ -357,7 +357,6 @@ async function hourlyForecast () {
   //change style of daily button
   document.getElementById('dailyButton').style.backgroundColor= "";
 };
-
 function dailyForecast () {
   document.getElementById('hourly').style.display="none";
   document.getElementById('daily').style.display=""
@@ -404,6 +403,5 @@ function openTab(value) {
     document.getElementById('thirdTab').style.backgroundColor="rgba(255, 255, 255, 0.3)";
     document.getElementById('firstTab').style.backgroundColor="";
     document.getElementById('secondTab').style.backgroundColor="";
-
   }
 };
