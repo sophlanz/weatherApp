@@ -17,6 +17,7 @@ A weather app that fetches data from the OpenWeatherApi to display the weather o
 
 ## Screenshot
 <img width="1279" alt="Captura de pantalla 2022-06-28 a las 22 16 45" src="https://user-images.githubusercontent.com/75180391/176276877-01299ef4-a1a8-4c7d-aa8b-7038e902a493.png">
+<img width="1280" alt="Captura de Pantalla 2022-11-17 a la(s) 4 13 24 p m" src="https://user-images.githubusercontent.com/75180391/202560969-a70ab680-2000-4671-8837-1e3499325a65.png">
 
 ## Screenshot Mobile
 <img width="407" alt="Captura de Pantalla 2022-11-17 a la(s) 2 48 38 p m" src="https://user-images.githubusercontent.com/75180391/202546360-f1e924d8-0b14-47dd-9c76-95476f5e14f3.png">
