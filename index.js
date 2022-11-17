@@ -1,7 +1,7 @@
-const apiURL = "http://api.openweathermap.org/data/2.5/weather?q=";
+import key from './config.js'; 
 
-import key from './config.js';
-async function getWeather() {
+
+window.getWeather = async function () {
     //where temperature will be sent
     const weatherDisplay = document.querySelector("#tempDisplay");
     //hide button for hourly display
@@ -134,7 +134,7 @@ getTime();
 //keep refreshing the time every 1000 miliseconds
 setInterval(getTime,1000);
 //keep track of celcius vs farenheight choice
-function celFar() {
+window.celFar = function () {
   let button = document.querySelector('#celFar')
   const option = button.value;
   //they want to see c
@@ -226,7 +226,140 @@ function celFar() {
   }
  }; 
 //get hourly forecase 
-async function hourlyForecast () {
+window.hourlyForecast = async function () {
+    //show buttons for hourly display
+    document.getElementById('hourlyButtons').style.display="";
+    let city = " "
+    //get current city 
+    if (document.querySelector('#city').value == ""){
+       city = "Barcelona"
+  } else {
+     city = document.querySelector('#city').value.trim();
+  }
+    //make api call to get lat and lon
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}`
+    const response = await fetch(weatherUrl)
+    const data = await response.json();
+    //get lat long to make new api request for hourly data. 
+    const lat = data.coord.lat;
+    const lon = data.coord.lon;
+    //make api call to get hourly data
+    const urlHourly = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=daily,minutely&appid=${key}`
+    const res = await fetch(urlHourly);
+    const dataHourly = await res.json();
+    const hourly = [...dataHourly.hourly]
+    //splie out the hours past 24 hours
+    hourly.splice(24);
+    //put the 12 clock hours to this array
+    const hours = [ ]
+    const timesOfDay = [ ];
+    const iconCodes = [ ]
+    //turn on display of the 24 divs
+    //change the timestamp to reflect hours
+    hourly.forEach((hour)=> {
+    //get the icon then push to array
+    let iconCode = hour.weather[0].icon;
+    iconCodes.push(iconCode);
+    hour = new Date(hour.dt*1000).getHours()
+    let timeOfDay=" "
+    //convert to 12-hour clock and add am/pm
+    if (hour < 12) {
+      timeOfDay = "AM";
+      hour = hour%12;
+      if(hour==0) {
+        hour = 12;
+      }
+      } else {
+       timeOfDay= "PM";
+       hour = hour%12; 
+       if(hour==0) {
+         hour = 12;
+       }
+      };
+      //push hour to hours array
+      hours.push(hour);
+      //push times of day
+      timesOfDay.push(timeOfDay);
+    }); 
+    //hide weekly display
+    document.getElementById('daily').style.display = "none";
+    //show hourly display
+    document.getElementById('hourly').style.display = "";
+    //clear divs from the previous time
+    let oldDivs = document.querySelectorAll("#hourlyWeather");
+    oldDivs = [...oldDivs];
+    if(oldDivs){
+      oldDivs.forEach((div)=> {
+        div.parentNode.removeChild(div);
+      })
+    };
+    //get tabs
+    const tab1 = document.getElementById('tab1');
+    const tab2 = document.getElementById('tab2');
+    const tab3 = document.getElementById('tab3');
+    for(let i=0; i<hours.length;i++){
+      let div = document.createElement('div');
+      div.id = "hourlyWeather";
+      //add hour and time of day to div
+      let time = document.createElement('p');
+      time.innerText = `${hours[i]} ${timesOfDay[i]}`;
+      time.id="hourlyTime";
+      //append time to new div
+      div.appendChild(time);
+      //add temp from hourly array
+      let temp = hourly[i].temp
+      temp = tempConvert(temp);
+      //create p element for temp
+      let tempDisplay = document.createElement('p');
+      tempDisplay.id="hourlyTemps";
+      //inner text far vs cel
+      if(document.getElementById('celFar').value== "f"){
+        tempDisplay.innerText = `${temp} °F `
+      } else {
+        tempDisplay.innerText = `${temp} °C`
+      }
+      //append temp to div
+      div.appendChild(tempDisplay);
+      //append icons to div
+       //create img element
+       let img = document.createElement('img');
+       img.id = "hourlyIcons";
+       //get icon code from array
+       let iconCode = iconCodes[i];
+       //add src
+       img.src=`http://openweathermap.org/img/wn/${iconCode}@2x.png`;
+       div.appendChild(img);
+      if(i<8){
+        //append previously created div to tab
+        tab1.appendChild(div);
+      }
+      //if i<16 add to tab 2
+      else if (i<16){
+        //append previously created div to tab
+        tab2.appendChild(div);
+       }
+       //else add to tab 3
+      else  {
+        //append previously created div to tab
+        tab3.appendChild(div);
+      }
+    };
+    //hide tab2 and tab3
+    document.getElementById('tab2').style.display = "none";
+    document.getElementById('tab3').style.display = "none";
+    //show the first tab
+    document.getElementById('tab1').style.display = ""
+    //Change style of first tab button 
+    document.getElementById('firstTab').style.backgroundColor="rgba(255, 255, 255, 0.3)";
+    //change style of hourly button 
+    document.getElementById('hourlyButton').style.backgroundColor= "rgba(255, 255, 255, 0.3)";
+     //change font-coor 
+   document.getElementById('hourlyButton').style.color= "rgb(59, 58, 58);";
+   document.getElementById('dailyButton').style.color= "";
+    //change style of daily button
+    document.getElementById('dailyButton').style.backgroundColor= "";
+}
+/* async function hourlyForecast () {
   //show buttons for hourly display
   document.getElementById('hourlyButtons').style.display="";
   let city = " "
@@ -357,8 +490,8 @@ async function hourlyForecast () {
  document.getElementById('dailyButton').style.color= "";
   //change style of daily button
   document.getElementById('dailyButton').style.backgroundColor= "";
-};
-function dailyForecast () {
+}; */
+window.dailyForecast = function () {
   document.getElementById('hourly').style.display="none";
   document.getElementById('daily').style.display=""
   //hide button for hourly display
@@ -372,7 +505,7 @@ function dailyForecast () {
  document.getElementById('hourlyButton').style.color= "";
 };
 //hourly tabs
-function openTab(value) {
+ window.openTab = function (value) {
   if(value == "tab1") {
     //hide other tabs
     document.getElementById('tab2').style.display = "none";
